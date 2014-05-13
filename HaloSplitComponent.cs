@@ -19,8 +19,8 @@ namespace LiveSplit.HaloSplit
         public IDictionary<string, Action> ContextMenuControls { get; protected set; }
 
         private TimerModel _timer;
-        private LiveSplitState _state;
         private GameMemory _gameMemory;
+        private DateTime? _splitTime;
 
         public HaloSplitComponent(LiveSplitState state)
         {
@@ -28,7 +28,6 @@ namespace LiveSplit.HaloSplit
 
             _timer = new TimerModel();
             _timer.CurrentState = state;
-            _state = state;
 
             _gameMemory = new GameMemory();
             // possible thread safety issues in all of these event handlers
@@ -43,7 +42,10 @@ namespace LiveSplit.HaloSplit
         void gameMemory_OnMapChanged(object sender, string map)
         {
             if (map != @"levels\a10\a10")
+            {
+                _splitTime = DateTime.Now;
                 _timer.Split();
+            }
         }
 
         void gameMemory_OnReset(object sender, EventArgs e)
@@ -58,7 +60,9 @@ namespace LiveSplit.HaloSplit
 
         void gameMemory_OnLostControl(object sender, EventArgs eventArgs)
         {
-            _timer.Split();
+            // hacky fix for double split issue on The Maw
+            if (_splitTime.HasValue && DateTime.Now - _splitTime.Value > TimeSpan.FromSeconds(10))
+                _timer.Split();
         }
 
         ~HaloSplitComponent()
