@@ -25,11 +25,6 @@ namespace LiveSplit.HaloSplit
         private DeepPointer _playerFrozenPtr;
         private DeepPointer _difficultyPtr;
 
-        public GameMemory()
-        {
-            _difficultyPtr = new DeepPointer(0x290354);
-        }
-
         public void StartReading()
         {
             if (_thread != null && _thread.Status == TaskStatus.Running)
@@ -60,6 +55,7 @@ namespace LiveSplit.HaloSplit
             {
                 if (gameProcess.MainModule.FileVersionInfo.FileVersion == "01.00.00.0564")
                 {
+                    _difficultyPtr = new DeepPointer(0x290354);
                     _currentMapPtr = new DeepPointer(0x30B4B9);
                     _playerFrozenPtr = new DeepPointer(0x46B838, 0x11);
                     _playerPosPtr = new DeepPointer(0x21A508, 0x77c);
@@ -67,9 +63,18 @@ namespace LiveSplit.HaloSplit
                 }
                 else if (gameProcess.MainModule.FileVersionInfo.FileVersion == "01.00.01.0580")
                 {
+                    _difficultyPtr = new DeepPointer(0x290354);
                     _currentMapPtr = new DeepPointer(0x30B6C1);
                     _playerFrozenPtr = new DeepPointer(0x46BA58, 0x11);
                     _playerPosPtr = new DeepPointer(0x21A278, 0x77c);
+                    return gameProcess;
+                }
+                else if (gameProcess.MainModule.FileVersionInfo.FileVersion == "01.00.10.0621")
+                {
+                    _difficultyPtr = new DeepPointer(0x296564);
+                    _currentMapPtr = new DeepPointer(0x319779);
+                    _playerFrozenPtr = new DeepPointer(0x47A478, 0x11);
+                    _playerPosPtr = new DeepPointer(0x21EE68, 0x77c);
                     return gameProcess;
                 }
             }

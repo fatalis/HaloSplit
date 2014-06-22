@@ -8,7 +8,7 @@ Automatically reset when the first level starts.
 
 Requirements:
 
-Halo CE 1.0 or 1.01
+Halo PC 1.0, 1.01 or 1.10
 LiveSplit 1.3+
 
 Install:
