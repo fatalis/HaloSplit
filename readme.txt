@@ -5,6 +5,7 @@ Features:
 Automatically start/stop the timer when player control is gained/lost.
 Automatically split when the level changes.
 Automatically reset when the first level starts.
+Optional death counter.
 
 Requirements:
 
