@@ -20,7 +20,7 @@ namespace LiveSplit.HaloSplit
             // this assumes the passed state is always the same one, until then
             return _instance ?? (_instance = new HaloSplitComponent(state));
 
-            // return new SourceSplitComponent(state);
+            // return new HaloSplitComponent(state);
         }
 
         public string UpdateName

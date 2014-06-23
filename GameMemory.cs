@@ -16,6 +16,7 @@ namespace LiveSplit.HaloSplit
         public event EventHandler OnGainControl;
         public event EventHandler OnLostControl;
         public event EventHandler OnReset;
+        public event EventHandler OnPlayerDeath;
 
         private Task _thread;
         private CancellationTokenSource _cancelSource;
@@ -24,6 +25,7 @@ namespace LiveSplit.HaloSplit
         private DeepPointer _playerPosPtr;
         private DeepPointer _playerFrozenPtr;
         private DeepPointer _difficultyPtr;
+        private DeepPointer _isDeadPtr;
 
         public void StartReading()
         {
@@ -59,6 +61,7 @@ namespace LiveSplit.HaloSplit
                     _currentMapPtr = new DeepPointer(0x30B4B9);
                     _playerFrozenPtr = new DeepPointer(0x46B838, 0x11);
                     _playerPosPtr = new DeepPointer(0x21A508, 0x77c);
+                    _isDeadPtr = new DeepPointer(0x302178);
                     return gameProcess;
                 }
                 else if (gameProcess.MainModule.FileVersionInfo.FileVersion == "01.00.01.0580")
@@ -67,6 +70,7 @@ namespace LiveSplit.HaloSplit
                     _currentMapPtr = new DeepPointer(0x30B6C1);
                     _playerFrozenPtr = new DeepPointer(0x46BA58, 0x11);
                     _playerPosPtr = new DeepPointer(0x21A278, 0x77c);
+                    _isDeadPtr = new DeepPointer(0x302280);
                     return gameProcess;
                 }
                 else if (gameProcess.MainModule.FileVersionInfo.FileVersion == "01.00.10.0621")
@@ -75,6 +79,7 @@ namespace LiveSplit.HaloSplit
                     _currentMapPtr = new DeepPointer(0x319779);
                     _playerFrozenPtr = new DeepPointer(0x47A478, 0x11);
                     _playerPosPtr = new DeepPointer(0x21EE68, 0x77c);
+                    _isDeadPtr = new DeepPointer(0x3102D8);
                     return gameProcess;
                 }
             }
@@ -98,6 +103,7 @@ namespace LiveSplit.HaloSplit
 
                     string prevCurrentMap = String.Empty;
                     bool prevPlayerFrozen = false;
+                    bool prevIsDead = false;
                     while (!gameProcess.HasExited)
                     {
                         string currentMap;
@@ -143,8 +149,17 @@ namespace LiveSplit.HaloSplit
                             }
                         }
 
+                        bool isDead;
+                        _isDeadPtr.Deref(gameProcess, out isDead);
+                        if (isDead && !prevIsDead)
+                        {
+                            if (this.OnPlayerDeath != null)
+                                this.OnPlayerDeath(this, EventArgs.Empty);
+                        }
+
                         prevCurrentMap = currentMap;
                         prevPlayerFrozen = playerFrozen;
+                        prevIsDead = isDead;
 
                         Thread.Sleep(15);
 

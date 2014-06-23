@@ -1,4 +1,5 @@
-﻿using LiveSplit.Model;
+﻿using System.Globalization;
+using LiveSplit.Model;
 using LiveSplit.UI.Components;
 using LiveSplit.UI;
 using System;
@@ -17,14 +18,23 @@ namespace LiveSplit.HaloSplit
         }
 
         public IDictionary<string, Action> ContextMenuControls { get; protected set; }
+        public HaloSplitSettings Settings { get; private set; }
 
         private TimerModel _timer;
+        private LiveSplitState _state;
+        private InfoTextComponent _deathCounter;
         private GameMemory _gameMemory;
         private DateTime? _splitTime;
+        private int _deaths;
 
         public HaloSplitComponent(LiveSplitState state)
         {
+            this.Settings = new HaloSplitSettings();
             this.ContextMenuControls = new Dictionary<String, Action>();
+            _deathCounter = new InfoTextComponent("Death Count", "0");
+
+            _state = state;
+            _state.OnReset += state_OnReset;
 
             _timer = new TimerModel();
             _timer.CurrentState = state;
@@ -36,7 +46,52 @@ namespace LiveSplit.HaloSplit
             _gameMemory.OnGainControl += gameMemory_OnGainControl;
             _gameMemory.OnLostControl += gameMemory_OnLostControl;
             _gameMemory.OnReset += gameMemory_OnReset;
+            _gameMemory.OnPlayerDeath += gameMemory_OnPlayerDeath;
             _gameMemory.StartReading();
+        }
+
+        ~HaloSplitComponent()
+        {
+            // TODO: in LiveSplit 1.4, components will be IDisposable
+            //_gameMemory.Stop();
+        }
+
+        public void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
+        {
+            if (!this.Settings.DeathCounter)
+                return;
+
+            string deaths = _deaths.ToString(CultureInfo.InvariantCulture);
+
+            if (invalidator != null && _deathCounter.InformationValue != deaths)
+            {
+                _deathCounter.InformationValue = deaths;
+                invalidator.Invalidate(0f, 0f, width, height);
+            }
+        }
+
+        public void DrawVertical(Graphics g, LiveSplitState state, float width, Region region)
+        {
+            this.PrepareDraw(state);
+            _deathCounter.DrawVertical(g, state, width, region);
+        }
+
+        public void DrawHorizontal(Graphics g, LiveSplitState state, float height, Region region)
+        {
+            this.PrepareDraw(state);
+            _deathCounter.DrawHorizontal(g, state, height, region);
+        }
+
+        void PrepareDraw(LiveSplitState state)
+        {
+            _deathCounter.NameLabel.ForeColor = state.LayoutSettings.TextColor;
+            _deathCounter.ValueLabel.ForeColor = state.LayoutSettings.TextColor;
+            _deathCounter.NameLabel.HasShadow = _deathCounter.ValueLabel.HasShadow = state.LayoutSettings.DropShadows;
+        }
+
+        void state_OnReset(object sender, EventArgs e)
+        {
+            _deaths = 0;
         }
 
         void gameMemory_OnMapChanged(object sender, string map)
@@ -65,26 +120,35 @@ namespace LiveSplit.HaloSplit
                 _timer.Split();
         }
 
-        ~HaloSplitComponent()
+        void gameMemory_OnPlayerDeath(object sender, EventArgs e)
         {
-            // TODO: in LiveSplit 1.4, components will be IDisposable
-            //_gameMemory.Stop();
+            if (_state.CurrentPhase != TimerPhase.NotRunning && _state.CurrentPhase != TimerPhase.Ended)
+                _deaths++;
         }
 
-        public XmlNode GetSettings(XmlDocument document) { return document.CreateElement("Settings"); }
-        public Control GetSettingsControl(LayoutMode mode) { return null; }
-        public void SetSettings(XmlNode settings) { }
-        public void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode) { }
-        public void DrawVertical(Graphics g, LiveSplitState state, float width, Region region) { }
-        public void DrawHorizontal(Graphics g, LiveSplitState state, float height, Region region) { }
+        public XmlNode GetSettings(XmlDocument document)
+        {
+            return this.Settings.GetSettings(document);
+        }
+
+        public Control GetSettingsControl(LayoutMode mode)
+        {
+            return this.Settings;
+        }
+
+        public void SetSettings(XmlNode settings)
+        {
+            this.Settings.SetSettings(settings);
+        }
+
         public void RenameComparison(string oldName, string newName) { }
-        public float VerticalHeight { get { return 0; } }
-        public float MinimumWidth { get { return 0; } }
-        public float HorizontalWidth { get { return 0; } }
-        public float MinimumHeight { get { return 0; } }
-        public float PaddingLeft { get { return 0; } }
-        public float PaddingRight { get { return 0; } }
-        public float PaddingTop { get { return 0; } }
-        public float PaddingBottom { get { return 0; } }
+        public float VerticalHeight { get { return this.Settings.DeathCounter ? _deathCounter.VerticalHeight : 0; } }
+        public float HorizontalWidth { get { return this.Settings.DeathCounter ? _deathCounter.HorizontalWidth : 0; } }
+        public float MinimumWidth { get { return _deathCounter.MinimumWidth; } }
+        public float MinimumHeight { get { return _deathCounter.MinimumHeight; } }
+        public float PaddingLeft { get { return this.Settings.DeathCounter ? _deathCounter.PaddingLeft : 0; } }
+        public float PaddingRight { get { return this.Settings.DeathCounter ? _deathCounter.PaddingRight : 0; } }
+        public float PaddingTop { get { return this.Settings.DeathCounter ? _deathCounter.PaddingTop : 0; } }
+        public float PaddingBottom { get { return this.Settings.DeathCounter ? _deathCounter.PaddingBottom : 0; } }
     }
 }
