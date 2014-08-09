@@ -7,20 +7,24 @@ namespace LiveSplit.HaloSplit
 {
     public class HaloSplitFactory : IComponentFactory
     {
-        private HaloSplitComponent _instance;
-
         public string ComponentName
         {
             get { return "HaloSplit"; }
         }
 
+        public string Description
+        {
+            get { return "Auto-splitter for Halo PC"; }
+        }
+
+        public ComponentCategory Category
+        {
+            get {  return ComponentCategory.Control; }
+        }
+
         public IComponent Create(LiveSplitState state)
         {
-            // TODO: in LiveSplit 1.4, components will be IDisposable
-            // this assumes the passed state is always the same one, until then
-            return _instance ?? (_instance = new HaloSplitComponent(state));
-
-            // return new HaloSplitComponent(state);
+            return new HaloSplitComponent(state);
         }
 
         public string UpdateName
