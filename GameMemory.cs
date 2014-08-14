@@ -38,10 +38,7 @@ namespace LiveSplit.HaloSplit
 
         public void Stop()
         {
-            if (_cancelSource == null || _thread == null)
-                throw new InvalidOperationException();
-
-            if (_thread.Status != TaskStatus.Running)
+            if (_cancelSource == null || _thread == null || _thread.Status != TaskStatus.Running)
                 return;
 
             _cancelSource.Cancel();

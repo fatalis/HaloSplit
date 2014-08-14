@@ -50,10 +50,10 @@ namespace LiveSplit.HaloSplit
             _gameMemory.StartReading();
         }
 
-        ~HaloSplitComponent()
+        public void Dispose()
         {
-            // TODO: in LiveSplit 1.4, components will be IDisposable
-            //_gameMemory.Stop();
+            if (_gameMemory != null)
+                _gameMemory.Stop();
         }
 
         public void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
@@ -89,7 +89,7 @@ namespace LiveSplit.HaloSplit
             _deathCounter.NameLabel.HasShadow = _deathCounter.ValueLabel.HasShadow = state.LayoutSettings.DropShadows;
         }
 
-        void state_OnReset(object sender, EventArgs e)
+        void state_OnReset(object sender, TimerPhase t)
         {
             _deaths = 0;
         }
