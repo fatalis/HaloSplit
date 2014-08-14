@@ -142,13 +142,13 @@ namespace LiveSplit.HaloSplit
         }
 
         public void RenameComparison(string oldName, string newName) { }
-        public float VerticalHeight { get { return this.Settings.DeathCounter ? _deathCounter.VerticalHeight : 0; } }
+        public float MinimumWidth    { get { return _deathCounter.MinimumWidth; } }
+        public float MinimumHeight   { get { return _deathCounter.MinimumHeight; } }
+        public float VerticalHeight  { get { return this.Settings.DeathCounter ? _deathCounter.VerticalHeight : 0; } }
         public float HorizontalWidth { get { return this.Settings.DeathCounter ? _deathCounter.HorizontalWidth : 0; } }
-        public float MinimumWidth { get { return _deathCounter.MinimumWidth; } }
-        public float MinimumHeight { get { return _deathCounter.MinimumHeight; } }
-        public float PaddingLeft { get { return this.Settings.DeathCounter ? _deathCounter.PaddingLeft : 0; } }
-        public float PaddingRight { get { return this.Settings.DeathCounter ? _deathCounter.PaddingRight : 0; } }
-        public float PaddingTop { get { return this.Settings.DeathCounter ? _deathCounter.PaddingTop : 0; } }
-        public float PaddingBottom { get { return this.Settings.DeathCounter ? _deathCounter.PaddingBottom : 0; } }
+        public float PaddingLeft     { get { return this.Settings.DeathCounter ? _deathCounter.PaddingLeft : 0; } }
+        public float PaddingRight    { get { return this.Settings.DeathCounter ? _deathCounter.PaddingRight : 0; } }
+        public float PaddingTop      { get { return this.Settings.DeathCounter ? _deathCounter.PaddingTop : 0; } }
+        public float PaddingBottom   { get { return this.Settings.DeathCounter ? _deathCounter.PaddingBottom : 0; } }
     }
 }

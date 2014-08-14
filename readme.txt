@@ -10,7 +10,7 @@ Optional death counter.
 Requirements:
 
 Halo PC 1.0, 1.01 or 1.10
-LiveSplit 1.3+
+LiveSplit 1.4+
 
 Install:
 
