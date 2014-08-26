@@ -52,6 +52,8 @@ namespace LiveSplit.HaloSplit
 
         public void Dispose()
         {
+            _state.OnReset -= state_OnReset;
+
             if (_gameMemory != null)
                 _gameMemory.Stop();
         }
