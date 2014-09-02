@@ -3,28 +3,28 @@ using LiveSplit.UI.Components;
 using System;
 using LiveSplit.Model;
 
-namespace LiveSplit.HaloSplit
+namespace LiveSplit.HaloSplit.UI
 {
-    public class HaloSplitFactory : IComponentFactory
+    public class HaloSplitUIFactory : IComponentFactory
     {
         public string ComponentName
         {
-            get { return "HaloSplit"; }
+            get { return "HaloSplit UI"; }
         }
 
         public string Description
         {
-            get { return "Auto-splitter for Halo PC"; }
+            get { return "HaloSplit death counter."; }
         }
 
         public ComponentCategory Category
         {
-            get {  return ComponentCategory.Control; }
+            get { return ComponentCategory.Information; }
         }
 
         public IComponent Create(LiveSplitState state)
         {
-            return new HaloSplitComponent(state);
+            return new HaloSplitUIComponent(state);
         }
 
         public string UpdateName
@@ -44,7 +44,7 @@ namespace LiveSplit.HaloSplit
 
         public string XMLURL
         {
-            get { return this.UpdateURL + "Components/update.LiveSplit.HaloSplit.xml"; }
+            get { return this.UpdateURL + "Components/update.LiveSplit.HaloSplit.UI.xml"; }
         }
     }
 }
