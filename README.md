@@ -21,7 +21,7 @@ Requirements
 Install
 -------
 
-Type "Halo: Combat Evolved" in LiveSplit's Splits Editor and click Activate. You don't have to download anything manually.
+Type "Halo: Combat Evolved" in LiveSplit's Splits Editor and click Activate. You don't have to download anything manually. If you want to use the death counter, just go to the Layout Editor and add "HaloSplit UI" under the Information category.
 
 Contact
 -------
